@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workflow.Web", "Workflow.Web\Workflow.Web.csproj", "{929F9130-C4E5-4620-B69C-45453FC799A8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7C6E5A1E-01D0-4BBA-9542-015C58123F77}"
+	ProjectSection(SolutionItems) = preProject
+		compose.yaml = compose.yaml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workflow.Data", "Workflow.Data\Workflow.Data.csproj", "{C9CBEA06-7A7B-480F-B966-C7CDF72F9D10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workflow.Core", "Workflow.Core\Workflow.Core.csproj", "{2CDAA363-9049-4080-A53D-5AB3FE37F27E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{929F9130-C4E5-4620-B69C-45453FC799A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{929F9130-C4E5-4620-B69C-45453FC799A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{929F9130-C4E5-4620-B69C-45453FC799A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{929F9130-C4E5-4620-B69C-45453FC799A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9CBEA06-7A7B-480F-B966-C7CDF72F9D10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9CBEA06-7A7B-480F-B966-C7CDF72F9D10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9CBEA06-7A7B-480F-B966-C7CDF72F9D10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9CBEA06-7A7B-480F-B966-C7CDF72F9D10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CDAA363-9049-4080-A53D-5AB3FE37F27E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CDAA363-9049-4080-A53D-5AB3FE37F27E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CDAA363-9049-4080-A53D-5AB3FE37F27E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CDAA363-9049-4080-A53D-5AB3FE37F27E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Data</RootNamespace>
+        <UserSecretsId>c4e1dbfe-33ac-4543-88b5-c6517b21b282</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MySql.Data" Version="9.6.0" />
+    </ItemGroup>
+
+</Project>
