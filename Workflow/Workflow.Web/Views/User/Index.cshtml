@@ -4,7 +4,15 @@
     ViewData["Title"] = "Register User";
 }
 
-<h1>Register UserDTO</h1>
+@section Head {
+    <script>
+        function onSuccess() {
+            document.getElementById("submit-button").disabled = false;
+        }
+    </script>
+}
+
+<h1>Register User</h1>
 
 @if (TempData["SuccessMessage"] is string successMessage)
 {
@@ -19,23 +27,25 @@
 
     <div class="mb-3">
         <label asp-for="Email" class="form-label"></label>
-        <input asp-for="Email" class="form-control" />
+        <input asp-for="Email" class="form-control" value="test@example.com" />
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="Username" class="form-label"></label>
-        <input asp-for="Username" class="form-control" />
+        <input asp-for="Username" class="form-control" value="test" />
         <span asp-validation-for="Username" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="Password" class="form-label"></label>
-        <input asp-for="Password" class="form-control" />
+        <input asp-for="Password" class="form-control" value="Password1234!" />
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Create user</button>
+    @await Component.InvokeAsync("Turnstile")
+    
+    <button type="submit" id="submit-button" class="btn btn-primary" disabled>Create user</button>
 </form>
 
 @section Scripts {

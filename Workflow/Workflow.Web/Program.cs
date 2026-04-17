@@ -1,13 +1,20 @@
 using Data;
 using Data.Users;
+using Workflow.Core.Turnstile;
 using Workflow.Core.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var turnstileSecretKey = builder.Configuration["Turnstile:SecretKey"] ?? throw new InvalidOperationException("Turnstile secret key not found.");
+var turnstileSiteKey = builder.Configuration["Turnstile:SiteKey"]  ?? throw new InvalidOperationException("Turnstile site key not found.");
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddSingleton<IDbConnectionFactory>(new DbConnectionFactory(connectionString));
-builder.Services.AddSingleton<IUserRepository, UserRepository>();
+builder.Services.AddHostedService<DbHealthCheckService>();
+
+builder.Services.AddHttpClient<ITurnstileService, TurnstileService>((httpClient) => new TurnstileService(httpClient, turnstileSecretKey, turnstileSiteKey));
+builder.Services.AddSingleton<IUserRepository, MysqlUserRepository>();
 builder.Services.AddSingleton<IUserService, UserService>();
 
 // Add services to the container.

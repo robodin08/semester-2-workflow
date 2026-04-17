@@ -1,11 +1,14 @@
 using System.Diagnostics;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using Web.Filters;
 using Workflow.Core.Users;
 using Web.Models;
+using Workflow.Core.Turnstile;
 
 namespace Web.Controllers;
 
-public class UserController(IUserService userService) : Controller
+public class UserController(IUserService userService, ITurnstileService turnstileService) : Controller
 {
     [HttpGet]
     public IActionResult Index()
@@ -15,6 +18,7 @@ public class UserController(IUserService userService) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ValidateTurnstile]
     public IActionResult Index(RegisterUserViewModel model)
     {
         if (!ModelState.IsValid)
@@ -24,8 +28,9 @@ public class UserController(IUserService userService) : Controller
 
         try
         {
-            var user = userService.CreateUser(new CreateUserRequest(model.Email, model.Username, model.Password));
-            TempData["SuccessMessage"] = $"User '{user.Username}' created successfully.";
+            // var user = userService.CreateUser(new CreateUserRequest(model.Email, model.Username, model.Password));
+            // TempData["SuccessMessage"] = $"User '{user.Username}' created successfully.";n
+            TempData["SuccessMessage"] = "Registration successful.";
             return RedirectToAction(nameof(Index));
         }
         catch(Exception ex)

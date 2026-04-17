@@ -5,4 +5,5 @@ namespace Data;
 public interface IDbConnectionFactory
 {
     MySqlConnection CreateConnection();
+    MySqlConnection CreateOpenConnection();
 }

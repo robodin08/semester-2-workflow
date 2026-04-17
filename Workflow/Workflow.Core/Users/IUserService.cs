@@ -6,5 +6,5 @@ public interface IUserService
 {
     User CreateUser(CreateUserRequest request);
     
-    bool VerifyPassword(UserDto user, string password);
+     bool VerifyPassword(UserDto user, string password);
 }

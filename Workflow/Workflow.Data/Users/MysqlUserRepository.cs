@@ -3,12 +3,11 @@ using MySql.Data.MySqlClient;
 
 namespace Data.Users;
 
-public class UserRepository(IDbConnectionFactory factory): IUserRepository
+public class MysqlUserRepository(IDbConnectionFactory factory): IUserRepository
 {
     public UserDto CreateUser(string email, string username, string passwordHash)
     {
-        using var connection = factory.CreateConnection();
-        connection.Open();
+        using var connection = factory.CreateOpenConnection();
         
         using var command = new MySqlCommand(@"
             INSERT INTO users (email, username, password_hash)

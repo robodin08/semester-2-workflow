@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workflow.Data", "Workflow.D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workflow.Core", "Workflow.Core\Workflow.Core.csproj", "{2CDAA363-9049-4080-A53D-5AB3FE37F27E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workflow.UnitTests", "Workflow.UnitTests\Workflow.UnitTests.csproj", "{F9341181-F8B4-4B27-B906-4F55235B9774}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,5 +31,9 @@ Global
 		{2CDAA363-9049-4080-A53D-5AB3FE37F27E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CDAA363-9049-4080-A53D-5AB3FE37F27E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CDAA363-9049-4080-A53D-5AB3FE37F27E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9341181-F8B4-4B27-B906-4F55235B9774}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9341181-F8B4-4B27-B906-4F55235B9774}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9341181-F8B4-4B27-B906-4F55235B9774}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9341181-F8B4-4B27-B906-4F55235B9774}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

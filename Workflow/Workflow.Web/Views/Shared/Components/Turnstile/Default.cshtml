@@ -1,0 +1,10 @@
+﻿@model Web.Models.TurnstileViewModel;
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>    
+
+<div class="cf-turnstile"
+     data-sitekey="@Model.SiteKey"
+     data-theme="@Model.Theme"
+     data-size="@Model.Size"
+     data-callback="@Model.Callback">
+</div>
