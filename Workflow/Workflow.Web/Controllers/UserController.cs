@@ -28,14 +28,13 @@ public class UserController(IUserService userService, ITurnstileService turnstil
 
         try
         {
-            // var user = userService.CreateUser(new CreateUserRequest(model.Email, model.Username, model.Password));
-            // TempData["SuccessMessage"] = $"User '{user.Username}' created successfully.";n
-            TempData["SuccessMessage"] = "Registration successful.";
+            var user = userService.CreateUser(new CreateUserRequest(model.Email, model.Username, model.Password));
+            TempData["SuccessMessage"] = $"User '{user.Username}' created successfully.";
+            // TODO: login
             return RedirectToAction(nameof(Index));
         }
         catch(Exception ex)
         {
-            Console.WriteLine(ex.Message);
             ModelState.AddModelError(string.Empty, "Could not create user. Please try again.");
             return View(model);
         }

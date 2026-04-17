@@ -14,7 +14,7 @@ builder.Services.AddSingleton<IDbConnectionFactory>(new DbConnectionFactory(conn
 builder.Services.AddHostedService<DbHealthCheckService>();
 
 builder.Services.AddHttpClient<ITurnstileService, TurnstileService>((httpClient) => new TurnstileService(httpClient, turnstileSecretKey, turnstileSiteKey));
-builder.Services.AddSingleton<IUserRepository, MysqlUserRepository>();
+builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<IUserService, UserService>();
 
 // Add services to the container.

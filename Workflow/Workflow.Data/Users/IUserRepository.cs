@@ -2,5 +2,9 @@
 
 public interface IUserRepository
 {
-    UserDto CreateUser(string email, string username, string passwordHash);
+    UserModel CreateUser(CreateUserModel model);
+    
+    UserModel GetUserByEmail(string email);
+    
+    UserModel GetUserByUsername(string username);
 }

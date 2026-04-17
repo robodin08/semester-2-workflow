@@ -5,6 +5,8 @@ namespace Workflow.Core.Users;
 public interface IUserService
 {
     User CreateUser(CreateUserRequest request);
+
+    User GetUserByEmail(string email);
     
-     bool VerifyPassword(UserDto user, string password);
+    User GetUserByUsername(string username);
 }
