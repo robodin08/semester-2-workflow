@@ -1,16 +1,35 @@
-﻿using Data.Users;
+﻿using System.Net.Mail;
+using System.Text.RegularExpressions;
+using Data.Users;
+using Workflow.Core.Users.Exceptions;
 
 namespace Workflow.Core.Users;
 
-public class User(int userId, string username, string email, DateTime createdAt)
+public sealed partial class User
 {
-    public int Id { get; } = userId;
-    public string Username { get; } = username;
-    public string Email { get; } = email;
-    public DateTime CreatedAt { get; } = createdAt;
+    private readonly string _passwordHash;
+    
+    public int Id { get; }
+    public string Username { get; }
+    public string Email { get; }
+    public DateTime CreatedAt { get; }
 
-    public static User FromUserModel(UserModel user)
+    private User(int id, string username, string email, string passwordHash, DateTime createdAt)
     {
-        return new User(user.Id, user.Username, user.Email, user.CreatedAt);
+        Id = id;
+        Username = username;
+        Email = email;
+        _passwordHash = passwordHash;
+        CreatedAt = createdAt;
+    }
+    
+    public static User FromUserDto(UserDto dto)
+    {
+        return new User(dto.Id, dto.Username, dto.Email, dto.PasswordHash, dto.CreatedAt);
+    }
+    
+    public UserDto ToUserDto()
+    {
+        return new UserDto(Id, Email, _passwordHash, Username, CreatedAt);
     }
 }

@@ -15,10 +15,20 @@ builder.Services.AddHostedService<DbHealthCheckService>();
 
 builder.Services.AddHttpClient<ITurnstileService, TurnstileService>((httpClient) => new TurnstileService(httpClient, turnstileSecretKey, turnstileSiteKey));
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
+builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddSingleton<IUserService, UserService>();
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(20);
+    options.Cookie.IsEssential = true;
+});
+
+// builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -32,6 +42,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthorization();
 

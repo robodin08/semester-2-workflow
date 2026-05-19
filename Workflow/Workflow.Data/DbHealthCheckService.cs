@@ -10,12 +10,10 @@ public class DbHealthCheckService(IDbConnectionFactory factory) : IHostedService
         try
         {
             await using var connection = factory.CreateConnection();
-
             await connection.OpenAsync(cancellationToken);
-
-            await using var command = connection.CreateCommand();
-            command.CommandText = "SELECT 1";
-
+            
+            var command = new MySqlCommand("SELECT 1", connection);
+            
             await command.ExecuteScalarAsync(cancellationToken);
         }
         catch (Exception ex)

@@ -7,7 +7,7 @@ using Workflow.Core.Turnstile;
 
 namespace Web.Filters;
 
-public class ValidateTurnstileAttribute : Attribute, IAsyncActionFilter
+internal class ValidateTurnstileAttribute : Attribute, IAsyncActionFilter
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {

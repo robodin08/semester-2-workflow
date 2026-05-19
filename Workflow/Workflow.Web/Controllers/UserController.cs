@@ -1,17 +1,52 @@
 using System.Diagnostics;
-using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Web.Filters;
 using Workflow.Core.Users;
 using Web.Models;
-using Workflow.Core.Turnstile;
 
 namespace Web.Controllers;
 
-public class UserController(IUserService userService, ITurnstileService turnstileService) : Controller
+public class UserController(IUserService userService) : Controller
 {
     [HttpGet]
-    public IActionResult Index()
+    public IActionResult Login()
+    {
+        var model = new LoginUserViewModel
+        {
+            Email = TempData["Email"]?.ToString() ?? string.Empty,
+        };
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [ValidateTurnstile]
+    public IActionResult Login(LoginUserViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+        
+        try
+        {
+            var user = userService.Login(new LoginRequest(model.Email, model.Password));
+            
+            HttpContext.Session.SetInt32("UserId", user.Id);
+            
+            return RedirectToAction(nameof(DashboardController.Index), "Dashboard");
+        }
+        
+        catch(Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View(model);
+        }
+    }
+    
+    [HttpGet]
+    public IActionResult Register()
     {
         return View(new RegisterUserViewModel());
     }
@@ -19,7 +54,7 @@ public class UserController(IUserService userService, ITurnstileService turnstil
     [HttpPost]
     [ValidateAntiForgeryToken]
     [ValidateTurnstile]
-    public IActionResult Index(RegisterUserViewModel model)
+    public IActionResult Register(RegisterUserViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -28,16 +63,25 @@ public class UserController(IUserService userService, ITurnstileService turnstil
 
         try
         {
-            var user = userService.CreateUser(new CreateUserRequest(model.Email, model.Username, model.Password));
-            TempData["SuccessMessage"] = $"User '{user.Username}' created successfully.";
-            // TODO: login
-            return RedirectToAction(nameof(Index));
+            var user = userService.Register(new RegisterRequest(model.Email, model.Username, model.Password));
+            TempData["Email"] = user.Email;
+            return RedirectToAction(nameof(Login));
         }
+        
         catch(Exception ex)
         {
-            ModelState.AddModelError(string.Empty, "Could not create user. Please try again.");
+            ModelState.AddModelError(string.Empty, ex.Message);
             return View(model);
         }
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear();
+
+        return RedirectToAction(nameof(HomeController.Index), "Home");
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

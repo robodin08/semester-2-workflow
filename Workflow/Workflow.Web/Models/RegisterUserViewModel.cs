@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Web.Models;
@@ -20,5 +21,10 @@ public class RegisterUserViewModel
     [RegularExpression(@"^[a-zA-Z0-9!@#$%^&*()_\-+=\[\]{};:'"",.<>?/|\\~`]+$",
         ErrorMessage = "Password contains invalid characters.")]
     public string Password { get; init; } = string.Empty;
+    
+    [Required]
+    [DataType(DataType.Password)]
+    [DisplayName("Confirm Password")]
+    [Compare("Password", ErrorMessage = "The passwords do not match.")]
+    public string ConfirmPassword { get; init; } = string.Empty;
 }
-

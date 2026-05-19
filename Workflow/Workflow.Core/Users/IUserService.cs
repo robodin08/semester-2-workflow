@@ -1,12 +1,10 @@
-﻿using Data.Users;
-
-namespace Workflow.Core.Users;
+﻿namespace Workflow.Core.Users;
 
 public interface IUserService
 {
-    User CreateUser(CreateUserRequest request);
-
-    User GetUserByEmail(string email);
+    User Register(RegisterRequest request);
     
-    User GetUserByUsername(string username);
+    User Login(LoginRequest request);
+    
+    User? GetUserById(int id);
 }

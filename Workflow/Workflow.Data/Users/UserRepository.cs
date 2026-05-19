@@ -1,69 +1,123 @@
 ﻿using MySql.Data.MySqlClient;
 
-namespace Data.Users
+namespace Data.Users;
+
+public class UserRepository(IDbConnectionFactory factory) : IUserRepository
 {
-    public class UserRepository(IDbConnectionFactory factory) : IUserRepository
+    public bool UserExistsByEmail(string email)
     {
-        public UserModel CreateUser(CreateUserModel model)
-        {
-            using var connection = factory.CreateOpenConnection();
+        using var connection = factory.CreateOpenConnection();
 
-            using var command = new MySqlCommand(@"
-                INSERT INTO users (email, username, password_hash)
-                VALUES (@email, @username, @password_hash);
-                SELECT id, email, username, password_hash, created_at
-                FROM users
-                WHERE id = LAST_INSERT_ID();
-            ", connection);
+        using var command = new MySqlCommand(@"
+        SELECT 1
+        FROM users
+        WHERE email = @email
+        LIMIT 1;
+    ", connection);
 
-            command.Parameters.AddWithValue("@email", model.Email);
-            command.Parameters.AddWithValue("@username", model.Username);
-            command.Parameters.AddWithValue("@password_hash", model.PasswordHash);
+        command.Parameters.AddWithValue("@email", email);
 
-            using var reader = command.ExecuteReader();
-            if (!reader.Read()) throw new Exception("Failed to create user.");
+        var result = command.ExecuteScalar();
 
-            var id = reader.GetInt32("id");
-            var dbEmail = reader.GetString("email");
-            var dbUsername = reader.GetString("username");
-            var dbPassword = reader.GetString("password_hash");
-            var createdAt = reader.GetDateTime("created_at");
+        return result != null;
+    }
 
-            return new UserModel(id, dbEmail, dbPassword, dbUsername, createdAt);
-        }
+    public bool UserExistsByUsername(string username)
+    {
+        using var connection = factory.CreateOpenConnection();
 
-        public UserModel GetUserByEmail(string email)
-        {
-            return GetUserByField("email", email);
-        }
+        using var command = new MySqlCommand("""
+                                                     SELECT 1
+                                                     FROM users
+                                                     WHERE username = @username
+                                                     LIMIT 1;
+                                                 
+                                             """, connection);
 
-        public UserModel GetUserByUsername(string username)
-        {
-            return GetUserByField("username", username);
-        }
-        
-        private UserModel GetUserByField(string fieldName, string value)
-        {
-            using var connection = factory.CreateOpenConnection();
+        command.Parameters.AddWithValue("@username", username);
 
-            using var command = new MySqlCommand($@"
-                SELECT id, email, username, password_hash, created_at
-                FROM users
-                WHERE {fieldName} = @{fieldName};
-            ", connection);
+        var result = command.ExecuteScalar();
 
-            command.Parameters.AddWithValue($"@{fieldName}", value);
+        return result != null;
+    }
 
-            using var reader = command.ExecuteReader();
-            if (!reader.Read()) throw new Exception($"User with {fieldName} '{value}' not found.");
+    public UserDto Register(RegisterUserDto dto)
+    {
+        using var connection = factory.CreateOpenConnection();
 
-            var id = reader.GetInt32("id");
-            var dbEmail = reader.GetString("email");
-            var dbUsername = reader.GetString("username");
-            var dbPassword = reader.GetString("password_hash");
-            var createdAt = reader.GetDateTime("created_at");
+        using var command = new MySqlCommand("""
+                                                             INSERT INTO users (email, username, password_hash)
+                                                             VALUES (@email, @username, @password_hash);
+                                                             SELECT id, email, username, password_hash, created_at
+                                                             FROM users
+                                                             WHERE id = LAST_INSERT_ID();
+                                                         
+                                             """, connection);
 
-            return new UserModel(id, dbEmail, dbPassword, dbUsername, createdAt);
-        }
+        command.Parameters.AddWithValue("@email", dto.Email);
+        command.Parameters.AddWithValue("@username", dto.Username);
+        command.Parameters.AddWithValue("@password_hash", dto.PasswordHash);
+
+        using var reader = command.ExecuteReader();
+        if (!reader.Read()) throw new Exception("Failed to create user.");
+
+        var id = reader.GetInt32("id");
+        var dbEmail = reader.GetString("email");
+        var dbUsername = reader.GetString("username");
+        var dbPassword = reader.GetString("password_hash");
+        var createdAt = reader.GetDateTime("created_at");
+
+        return new UserDto(id, dbEmail, dbUsername, dbPassword, createdAt);
+    }
+
+    public UserDto? GetUserByEmail(string email)
+    {
+        using var connection = factory.CreateOpenConnection();
+
+        using var command = new MySqlCommand($"""
+                                                              SELECT id, email, username, password_hash, created_at
+                                                              FROM users
+                                                              WHERE email = @email;
+                                                          
+                                              """, connection);
+
+        command.Parameters.AddWithValue($"@email", email);
+
+        using var reader = command.ExecuteReader();
+        if (!reader.Read()) return null;
+
+        var dbId = reader.GetInt32("id");
+        var dbEmail = reader.GetString("email");
+        var dbUsername = reader.GetString("username");
+        var dbPassword = reader.GetString("password_hash");
+        var createdAt = reader.GetDateTime("created_at");
+
+        return new UserDto(dbId, dbEmail, dbUsername, dbPassword, createdAt);
+    }
+
+    public UserDto? GetUserById(int id)
+    {
+        using var connection = factory.CreateOpenConnection();
+
+        using var command = new MySqlCommand($"""
+
+                                                              SELECT id, email, username, password_hash, created_at
+                                                              FROM users
+                                                              WHERE id = @id;
+                                                          
+                                              """, connection);
+
+        command.Parameters.AddWithValue($"@id", id);
+
+        using var reader = command.ExecuteReader();
+        if (!reader.Read()) return null;
+
+        var dbId = reader.GetInt32("id");
+        var dbEmail = reader.GetString("email");
+        var dbUsername = reader.GetString("username");
+        var dbPassword = reader.GetString("password_hash");
+        var createdAt = reader.GetDateTime("created_at");
+
+        return new UserDto(dbId, dbEmail, dbUsername, dbPassword, createdAt);
     }
 }
