@@ -1,66 +1,26 @@
 ﻿using Data.Users;
+using Workflow.Core.Users.Exceptions;
 
 namespace Workflow.Core.Users;
 
-public class UserService(IUserRepository repository) : IUserService
+public class UserService(IUserRepository repository, IPasswordHasher passwordHasher) : IUserService
 {
     public User CreateUser(CreateUserRequest request)
     {
-        UserValidator.ValidateCreateUserRequest(request);
+        var email = new Email(request.Email);
+        var username = new Username(request.Username);
+        var password = new Password(request.Password);
+        
+        if (repository.UserExistsByEmail(email.Value))
+            throw new DuplicateUserException("Email already in use");
 
-        if (UserExists(request.Email, request.Username))
-        {
-            throw new Exception("A user with this email or username already exists.");
-        }
+        if (repository.UserExistsByUsername(username.Value))
+            throw new DuplicateUserException("Username already in use");
+        
+        var createUserDto = new CreateUserDto(email.Value, username.Value, passwordHasher.Hash(password.Value));
+        
+        var userDto = repository.CreateUser(createUserDto);
 
-        var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
-        var createUserModel = new CreateUserModel(request.Email, request.Username, passwordHash);
-        var userModel = repository.CreateUser(createUserModel);
-
-        return User.FromUserModel(userModel);
-    }
-
-    public User GetUserByEmail(string email)
-    {
-        var userModel = repository.GetUserByEmail(email);
-
-        return User.FromUserModel(userModel);
-    }
-
-    public User GetUserByUsername(string username)
-    {
-        var userModel = repository.GetUserByUsername(username);
-
-        return User.FromUserModel(userModel);
-    }
-
-    private bool VerifyPassword(UserModel user, string password)
-    {
-        return BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
-    }
-
-    private bool UserExists(string email, string username)
-    {
-        try
-        {
-            repository.GetUserByEmail(email);
-            return true;
-        }
-        catch
-        {
-            // ignored
-        }
-
-        try
-        {
-            repository.GetUserByUsername(username);
-            return true;
-        }
-        catch
-        {
-            // ignored
-        }
-
-        return false;
+        return User.FromUserDto(userDto);
     }
 }

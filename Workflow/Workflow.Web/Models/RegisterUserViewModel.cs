@@ -21,4 +21,3 @@ public class RegisterUserViewModel
         ErrorMessage = "Password contains invalid characters.")]
     public string Password { get; init; } = string.Empty;
 }
-

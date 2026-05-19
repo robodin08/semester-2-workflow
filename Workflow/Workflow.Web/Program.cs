@@ -15,6 +15,7 @@ builder.Services.AddHostedService<DbHealthCheckService>();
 
 builder.Services.AddHttpClient<ITurnstileService, TurnstileService>((httpClient) => new TurnstileService(httpClient, turnstileSecretKey, turnstileSiteKey));
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
+builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddSingleton<IUserService, UserService>();
 
 // Add services to the container.

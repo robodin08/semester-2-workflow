@@ -2,9 +2,10 @@
 
 public interface IUserRepository
 {
-    UserModel CreateUser(CreateUserModel model);
+    bool UserExistsByEmail(string email);
+    bool UserExistsByUsername(string username);
     
-    UserModel GetUserByEmail(string email);
+    UserDto CreateUser(CreateUserDto dto);
     
-    UserModel GetUserByUsername(string username);
+    UserDto GetUserByEmail(string email);
 }

@@ -1,17 +1,21 @@
 using System.Diagnostics;
-using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Web.Filters;
 using Workflow.Core.Users;
 using Web.Models;
-using Workflow.Core.Turnstile;
 
 namespace Web.Controllers;
 
-public class UserController(IUserService userService, ITurnstileService turnstileService) : Controller
+public class UserController(IUserService userService) : Controller
 {
     [HttpGet]
-    public IActionResult Index()
+    public IActionResult Login()
+    {
+        return View();
+    }
+    
+    [HttpGet]
+    public IActionResult Register()
     {
         return View(new RegisterUserViewModel());
     }
@@ -19,7 +23,7 @@ public class UserController(IUserService userService, ITurnstileService turnstil
     [HttpPost]
     [ValidateAntiForgeryToken]
     [ValidateTurnstile]
-    public IActionResult Index(RegisterUserViewModel model)
+    public IActionResult Register(RegisterUserViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -28,14 +32,15 @@ public class UserController(IUserService userService, ITurnstileService turnstil
 
         try
         {
-            var user = userService.CreateUser(new CreateUserRequest(model.Email, model.Username, model.Password));
+            var userRequest = new CreateUserRequest(model.Email, model.Username, model.Password);
+            var user = userService.CreateUser(userRequest);
             TempData["SuccessMessage"] = $"User '{user.Username}' created successfully.";
             // TODO: login
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Login));
         }
         catch(Exception ex)
         {
-            ModelState.AddModelError(string.Empty, "Could not create user. Please try again.");
+            ModelState.AddModelError(string.Empty, ex.Message);
             return View(model);
         }
     }
