@@ -18,7 +18,7 @@ public class UserService(IUserRepository userRepository, IPasswordHasher passwor
             throw new DuplicateUserException("Username already in use");
 
         var userDto =
-            userRepository.Register(new RegisterUserDto(email.Value, username.Value,
+            userRepository.Register(new RegisterDto(email.Value, username.Value,
                 passwordHasher.Hash(password.Value)));
 
         return User.FromUserDto(userDto);

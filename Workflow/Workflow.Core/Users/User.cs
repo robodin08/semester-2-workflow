@@ -7,29 +7,22 @@ namespace Workflow.Core.Users;
 
 public sealed partial class User
 {
-    private readonly string _passwordHash;
     
     public int Id { get; }
-    public string Username { get; }
     public string Email { get; }
+    public string Username { get; }
     public DateTime CreatedAt { get; }
 
-    private User(int id, string username, string email, string passwordHash, DateTime createdAt)
+    private User(int id, string email, string username, DateTime createdAt)
     {
         Id = id;
-        Username = username;
         Email = email;
-        _passwordHash = passwordHash;
+        Username = username;
         CreatedAt = createdAt;
     }
     
     public static User FromUserDto(UserDto dto)
     {
-        return new User(dto.Id, dto.Username, dto.Email, dto.PasswordHash, dto.CreatedAt);
-    }
-    
-    public UserDto ToUserDto()
-    {
-        return new UserDto(Id, Email, _passwordHash, Username, CreatedAt);
+        return new User(dto.Id, dto.Email, dto.Username, dto.CreatedAt);
     }
 }

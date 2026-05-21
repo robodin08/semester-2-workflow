@@ -31,12 +31,22 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        @await Component.InvokeAsync("Logout")
-                    </li>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            @await Component.InvokeAsync("Logout")
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">Login</a>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>

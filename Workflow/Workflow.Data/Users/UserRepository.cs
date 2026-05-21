@@ -41,7 +41,7 @@ public class UserRepository(IDbConnectionFactory factory) : IUserRepository
         return result != null;
     }
 
-    public UserDto Register(RegisterUserDto dto)
+    public UserDto Register(RegisterDto dto)
     {
         using var connection = factory.CreateOpenConnection();
 
@@ -100,7 +100,6 @@ public class UserRepository(IDbConnectionFactory factory) : IUserRepository
         using var connection = factory.CreateOpenConnection();
 
         using var command = new MySqlCommand($"""
-
                                                               SELECT id, email, username, password_hash, created_at
                                                               FROM users
                                                               WHERE id = @id;

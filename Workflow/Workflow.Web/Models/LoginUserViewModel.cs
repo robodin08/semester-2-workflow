@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Web.Models;
@@ -15,4 +16,7 @@ public class LoginUserViewModel
     [RegularExpression(@"^[a-zA-Z0-9!@#$%^&*()_\-+=\[\]{};:'"",.<>?/|\\~`]+$",
         ErrorMessage = "Password contains invalid characters.")]
     public string Password { get; init; } = string.Empty;
+    
+    [DisplayName("Remember Me")]
+    public bool RememberMe { get; init; }  = false;
 }

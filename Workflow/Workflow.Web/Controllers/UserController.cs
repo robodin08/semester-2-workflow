@@ -1,4 +1,8 @@
 using System.Diagnostics;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Filters;
 using Workflow.Core.Users;
@@ -11,47 +15,60 @@ public class UserController(IUserService userService) : Controller
     [HttpGet]
     public IActionResult Login()
     {
-        var model = new LoginUserViewModel
+        if (User.Identity?.IsAuthenticated == true)
+            return RedirectToAction("Index", "Dashboard");
+
+        return View(new LoginUserViewModel
         {
             Email = TempData["Email"]?.ToString() ?? string.Empty,
-        };
-
-        return View(model);
+        });
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [ValidateTurnstile]
-    public IActionResult Login(LoginUserViewModel model)
+    public async Task<IActionResult> Login(LoginUserViewModel model)
     {
         if (!ModelState.IsValid)
-        {
             return View(model);
-        }
-        
+
         try
         {
             var user = userService.Login(new LoginRequest(model.Email, model.Password));
-            
-            HttpContext.Session.SetInt32("UserId", user.Id);
-            
-            return RedirectToAction(nameof(DashboardController.Index), "Dashboard");
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = model.RememberMe,
+            };
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                principal, authProperties);
+
+            return RedirectToAction("Index", "Dashboard");
         }
-        
-        catch(Exception ex)
+        catch (Exception ex)
         {
             ModelState.AddModelError(string.Empty, ex.Message);
             return View(model);
         }
     }
-    
+
     [HttpGet]
+    [Authorize]
     public IActionResult Register()
     {
         return View(new RegisterUserViewModel());
     }
 
     [HttpPost]
+    [Authorize]
     [ValidateAntiForgeryToken]
     [ValidateTurnstile]
     public IActionResult Register(RegisterUserViewModel model)
@@ -67,19 +84,20 @@ public class UserController(IUserService userService) : Controller
             TempData["Email"] = user.Email;
             return RedirectToAction(nameof(Login));
         }
-        
-        catch(Exception ex)
+
+        catch (Exception ex)
         {
             ModelState.AddModelError(string.Empty, ex.Message);
             return View(model);
         }
     }
-    
+
     [HttpPost]
+    [Authorize]
     [ValidateAntiForgeryToken]
-    public IActionResult Logout()
+    public async Task<IActionResult> Logout()
     {
-        HttpContext.Session.Clear();
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
         return RedirectToAction(nameof(HomeController.Index), "Home");
     }

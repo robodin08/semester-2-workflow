@@ -1,5 +1,6 @@
 using Data;
 using Data.Users;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Workflow.Core.Turnstile;
 using Workflow.Core.Users;
 
@@ -18,17 +19,18 @@ builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddSingleton<IUserService, UserService>();
 
+// Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDistributedMemoryCache();
-
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromSeconds(20);
-    options.Cookie.IsEssential = true;
-});
-
-// builder.Services.AddHttpContextAccessor();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/User/Login";
+        // options.AccessDeniedPath = "/User/AccessDenied";
+        options.Cookie.HttpOnly = true;
+        options.ExpireTimeSpan = TimeSpan.FromSeconds(30);
+        options.SlidingExpiration = true;
+    });
 
 var app = builder.Build();
 
@@ -43,8 +45,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseSession();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

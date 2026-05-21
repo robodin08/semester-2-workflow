@@ -20,7 +20,7 @@ public class MockUserRepository : IUserRepository
         return _users.Any(u => u.Username == username);
     }
 
-    public UserDto Register(RegisterUserDto dto)
+    public UserDto Register(RegisterDto dto)
     {
         var user = new UserDto(
             _users.Count + 1,
