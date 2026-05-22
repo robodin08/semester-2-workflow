@@ -3,17 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Web.Models;
 
-public class RegisterUserViewModel
+public class LoginUserViewModel
 {
     [Required]
     [EmailAddress]
     [StringLength(254)]
     public string Email { get; init; } = string.Empty;
-
-    [Required]
-    [StringLength(20, MinimumLength = 3)]
-    [RegularExpression(@"^[a-zA-Z0-9_]+$", ErrorMessage = "Username can only contain letters, numbers, underscore.")]
-    public string Username { get; init; } = string.Empty;
 
     [Required]
     [DataType(DataType.Password)]
@@ -22,9 +17,6 @@ public class RegisterUserViewModel
         ErrorMessage = "Password contains invalid characters.")]
     public string Password { get; init; } = string.Empty;
     
-    [Required]
-    [DataType(DataType.Password)]
-    [DisplayName("Confirm Password")]
-    [Compare("Password", ErrorMessage = "The passwords do not match.")]
-    public string ConfirmPassword { get; init; } = string.Empty;
+    [DisplayName("Remember Me")]
+    public bool RememberMe { get; init; }  = false;
 }

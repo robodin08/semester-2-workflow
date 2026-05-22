@@ -25,14 +25,14 @@ public class UserServiceTest
     public void CreateUser_ShouldCreateUser_WhenRequestIsValid()
     {
         // Arrange
-        var request = new CreateUserRequest(
+        var request = new RegisterRequest(
             "test@example.com",
             "user",
             "password123"
         );
 
         // Act
-        var user = _userService.CreateUser(request);
+        var user = _userService.Register(request);
         
         // Asset
         Assert.IsNotNull(user);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Data.Users;
@@ -19,7 +20,7 @@ public class MockUserRepository : IUserRepository
         return _users.Any(u => u.Username == username);
     }
 
-    public UserDto CreateUser(CreateUserDto dto)
+    public UserDto Register(RegisterDto dto)
     {
         var user = new UserDto(
             _users.Count + 1,
@@ -34,9 +35,13 @@ public class MockUserRepository : IUserRepository
         return user;
     }
 
-    public UserDto GetUserByEmail(string email)
+    public UserDto? GetUserByEmail(string email)
     {
-        return _users.FirstOrDefault(u => u.Email == email)
-               ?? throw new Exception("User not found.");
+        return _users.FirstOrDefault(u => u.Email == email);
+    }
+
+    public UserDto? GetUserById(int id)
+    {
+        return _users.FirstOrDefault(u => u.Id == id);
     }
 }

@@ -2,5 +2,9 @@
 
 public interface IUserService
 {
-    User CreateUser(CreateUserRequest request);
+    User Register(RegisterRequest request);
+    
+    User Login(LoginRequest request);
+    
+    User? GetUserById(int id);
 }

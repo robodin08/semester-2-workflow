@@ -1,5 +1,6 @@
 using Data;
 using Data.Users;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Workflow.Core.Turnstile;
 using Workflow.Core.Users;
 
@@ -21,6 +22,16 @@ builder.Services.AddSingleton<IUserService, UserService>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/User/Login";
+        // options.AccessDeniedPath = "/User/AccessDenied";
+        options.Cookie.HttpOnly = true;
+        options.ExpireTimeSpan = TimeSpan.FromSeconds(30);
+        options.SlidingExpiration = true;
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,6 +45,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
