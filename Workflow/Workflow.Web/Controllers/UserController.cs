@@ -38,7 +38,7 @@ public class UserController(IUserService userService) : Controller
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Name, user.Username.Value),
             };
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -81,7 +81,7 @@ public class UserController(IUserService userService) : Controller
         try
         {
             var user = userService.Register(new RegisterRequest(model.Email, model.Username, model.Password));
-            TempData["Email"] = user.Email;
+            TempData["Email"] = user.Email.Value;
             return RedirectToAction(nameof(Login));
         }
 
@@ -99,7 +99,7 @@ public class UserController(IUserService userService) : Controller
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-        return RedirectToAction(nameof(HomeController.Index), "Home");
+        return RedirectToAction(nameof(Login));
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

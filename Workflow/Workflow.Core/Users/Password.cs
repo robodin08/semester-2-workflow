@@ -19,7 +19,7 @@ public sealed partial record Password
     [GeneratedRegex(@"^[a-zA-Z0-9!@#$%^&*()_\-+=\[\]{};:'"",.<>?/|\\~`]+$")]
     private static partial Regex PasswordRegex();
 
-    private static void ValidatePassword(string password)
+    private void ValidatePassword(string password)
     {
         if (string.IsNullOrWhiteSpace(password))
             throw new InvalidPasswordException("password cannot be empty.");
