@@ -14,7 +14,7 @@ public sealed record Email
         Value = value;
     }
 
-    private static void ValidateEmail(string email)
+    private void ValidateEmail(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
             throw new InvalidEmailException("Email cannot be empty");

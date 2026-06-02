@@ -6,8 +6,9 @@ using Workflow.Core.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var turnstileSecretKey = builder.Configuration["Turnstile:SecretKey"] ?? throw new InvalidOperationException("Turnstile secret key not found.");
-var turnstileSiteKey = builder.Configuration["Turnstile:SiteKey"]  ?? throw new InvalidOperationException("Turnstile site key not found.");
+var turnstileSecretKey = builder.Configuration.GetValue<string>("Turnstile:SecretKey") ?? throw new InvalidOperationException("Turnstile secret key not found.");
+var turnstileSiteKey = builder.Configuration.GetValue<string>("Turnstile:SiteKey")  ?? throw new InvalidOperationException("Turnstile site key not found.");
+var bCryptWorkFactor = builder.Configuration.GetValue<int>("PasswordHashing:BCryptWorkFactor");
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -16,7 +17,7 @@ builder.Services.AddHostedService<DbHealthCheckService>();
 
 builder.Services.AddHttpClient<ITurnstileService, TurnstileService>((httpClient) => new TurnstileService(httpClient, turnstileSecretKey, turnstileSiteKey));
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
-builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
+builder.Services.AddSingleton<IPasswordHasher>(new PasswordHasher(bCryptWorkFactor));
 builder.Services.AddSingleton<IUserService, UserService>();
 
 // Add services to the container.

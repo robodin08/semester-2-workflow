@@ -35,8 +35,9 @@ public class UserServiceTest
         var user = _userService.Register(request);
         
         // Asset
-        Assert.IsNotNull(user);
-        Assert.AreEqual(request.Email, user.Email);
-        Assert.AreEqual(request.Username, user.Username);
+        Assert.That(user.Email, Is.EqualTo(request.Email));
+        Assert.That(user.Username, Is.EqualTo(request.Username));
+        // Assert.That(user.PasswordHash, Is.Not.EqualTo(request.Password));
+        // Assert.That(user.PasswordHash, Is.EqualTo("hashed_password123"));
     }
 }

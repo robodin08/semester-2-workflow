@@ -5,24 +5,16 @@ using Workflow.Core.Users.Exceptions;
 
 namespace Workflow.Core.Users;
 
-public sealed partial class User
+public class User(int id, Email email, Username username, DateTime createdAt)
 {
     
-    public int Id { get; }
-    public string Email { get; }
-    public string Username { get; }
-    public DateTime CreatedAt { get; }
+    public int Id { get; } = id;
+    public Email Email { get; } = email;
+    public Username Username { get; } = username;
+    public DateTime CreatedAt { get; } = createdAt;
 
-    private User(int id, string email, string username, DateTime createdAt)
-    {
-        Id = id;
-        Email = email;
-        Username = username;
-        CreatedAt = createdAt;
-    }
-    
     public static User FromUserDto(UserDto dto)
     {
-        return new User(dto.Id, dto.Email, dto.Username, dto.CreatedAt);
+        return new User(dto.Id, new Email(dto.Email), new Username(dto.Username), dto.CreatedAt);
     }
 }
