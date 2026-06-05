@@ -8,12 +8,12 @@ public class UserRepository(IDbConnectionFactory factory) : IUserRepository
     {
         using var connection = factory.CreateOpenConnection();
 
-        using var command = new MySqlCommand(@"
-        SELECT 1
-        FROM users
-        WHERE email = @email
-        LIMIT 1;
-    ", connection);
+        using var command = new MySqlCommand("""
+                                                     SELECT 1
+                                                     FROM users
+                                                     WHERE email = @email
+                                                     LIMIT 1;
+                                             """, connection);
 
         command.Parameters.AddWithValue("@email", email);
 
@@ -31,7 +31,6 @@ public class UserRepository(IDbConnectionFactory factory) : IUserRepository
                                                      FROM users
                                                      WHERE username = @username
                                                      LIMIT 1;
-                                                 
                                              """, connection);
 
         command.Parameters.AddWithValue("@username", username);
@@ -41,7 +40,7 @@ public class UserRepository(IDbConnectionFactory factory) : IUserRepository
         return result != null;
     }
 
-    public UserDto Register(RegisterDto dto)
+    public UserModel Register(RegisterModel model)
     {
         using var connection = factory.CreateOpenConnection();
 
@@ -51,12 +50,11 @@ public class UserRepository(IDbConnectionFactory factory) : IUserRepository
                                                              SELECT id, email, username, password_hash, created_at
                                                              FROM users
                                                              WHERE id = LAST_INSERT_ID();
-                                                         
                                              """, connection);
 
-        command.Parameters.AddWithValue("@email", dto.Email);
-        command.Parameters.AddWithValue("@username", dto.Username);
-        command.Parameters.AddWithValue("@password_hash", dto.PasswordHash);
+        command.Parameters.AddWithValue("@email", model.Email);
+        command.Parameters.AddWithValue("@username", model.Username);
+        command.Parameters.AddWithValue("@password_hash", model.PasswordHash);
 
         using var reader = command.ExecuteReader();
         if (!reader.Read()) throw new Exception("Failed to create user.");
@@ -67,10 +65,10 @@ public class UserRepository(IDbConnectionFactory factory) : IUserRepository
         var dbPassword = reader.GetString("password_hash");
         var createdAt = reader.GetDateTime("created_at");
 
-        return new UserDto(id, dbEmail, dbUsername, dbPassword, createdAt);
+        return new UserModel(id, dbEmail, dbUsername, dbPassword, createdAt);
     }
 
-    public UserDto? GetUserByEmail(string email)
+    public UserModel? GetUserByEmail(string email)
     {
         using var connection = factory.CreateOpenConnection();
 
@@ -78,7 +76,6 @@ public class UserRepository(IDbConnectionFactory factory) : IUserRepository
                                                               SELECT id, email, username, password_hash, created_at
                                                               FROM users
                                                               WHERE email = @email;
-                                                          
                                               """, connection);
 
         command.Parameters.AddWithValue($"@email", email);
@@ -92,10 +89,10 @@ public class UserRepository(IDbConnectionFactory factory) : IUserRepository
         var dbPassword = reader.GetString("password_hash");
         var createdAt = reader.GetDateTime("created_at");
 
-        return new UserDto(dbId, dbEmail, dbUsername, dbPassword, createdAt);
+        return new UserModel(dbId, dbEmail, dbUsername, dbPassword, createdAt);
     }
 
-    public UserDto? GetUserById(int id)
+    public UserModel? GetUserById(int id)
     {
         using var connection = factory.CreateOpenConnection();
 
@@ -103,7 +100,6 @@ public class UserRepository(IDbConnectionFactory factory) : IUserRepository
                                                               SELECT id, email, username, password_hash, created_at
                                                               FROM users
                                                               WHERE id = @id;
-                                                          
                                               """, connection);
 
         command.Parameters.AddWithValue($"@id", id);
@@ -117,6 +113,6 @@ public class UserRepository(IDbConnectionFactory factory) : IUserRepository
         var dbPassword = reader.GetString("password_hash");
         var createdAt = reader.GetDateTime("created_at");
 
-        return new UserDto(dbId, dbEmail, dbUsername, dbPassword, createdAt);
+        return new UserModel(dbId, dbEmail, dbUsername, dbPassword, createdAt);
     }
 }

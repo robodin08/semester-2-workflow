@@ -1,7 +1,4 @@
-﻿using System.Net.Mail;
-using System.Text.RegularExpressions;
-using Data.Users;
-using Workflow.Core.Users.Exceptions;
+﻿using Data.Users;
 
 namespace Workflow.Core.Users;
 
@@ -13,8 +10,8 @@ public class User(int id, Email email, Username username, DateTime createdAt)
     public Username Username { get; } = username;
     public DateTime CreatedAt { get; } = createdAt;
 
-    public static User FromUserDto(UserDto dto)
+    public static User FromUserDto(UserModel model)
     {
-        return new User(dto.Id, new Email(dto.Email), new Username(dto.Username), dto.CreatedAt);
+        return new User(model.Id, new Email(model.Email), new Username(model.Username), model.CreatedAt);
     }
 }

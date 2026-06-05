@@ -7,15 +7,15 @@ This document describes how to set up and run the `Workflow.Web` application in 
 - .NET 10 SDK
 - A running MySQL server
 
-## Configurations
+## Configuration
 
-The application requires the following configuration values to be provided in your environment:
+## Configuration
 
-| Key | Description | Example |
-|-----|------------|---------|
-| `ConnectionStrings:DefaultConnection` | MySQL connection string used by the application | `server=localhost;port=3306;database=workflow;user=your_user;password=your_password;` |
-| `Turnstile:SecretKey` | Secret key used for server-side Turnstile validation | `your_secret_key` |
-| `Turnstile:SiteKey` | Public site key used on the client side | `your_site_key` |
+Copy the example configuration file for your environment:
+
+```pwsh
+cp appsettings.example.json appsettings.Development.json
+```
 
 ## Running the Application
 
