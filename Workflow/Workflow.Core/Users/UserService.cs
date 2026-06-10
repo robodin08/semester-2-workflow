@@ -19,7 +19,7 @@ public class UserService(IUserRepository userRepository, IPasswordHasher passwor
 
         var passwordHash = passwordHasher.Hash(password.Value);
 
-        var userDto = userRepository.Register(new RegisterModel(email.Value, username.Value, passwordHash));
+        var userDto = userRepository.Register(new RegisterDto(email.Value, username.Value, passwordHash));
 
         return User.FromUserDto(userDto);
     }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Web.Filters;
 using Workflow.Core.Users;
 using Web.Models;
+using Workflow.Core.Exceptions;
 
 namespace Web.Controllers;
 
@@ -55,20 +56,22 @@ public class UserController(IUserService userService) : Controller
         }
         catch (Exception ex)
         {
-            ModelState.AddModelError(string.Empty, ex.Message);
+            ModelState.AddModelError(string.Empty,
+                ex is UserVisibleException ? ex.Message : "An unexpected error occurred. Please try again later.");
+
             return View(model);
         }
     }
 
     [HttpGet]
-    [Authorize]
+    // [Authorize]
     public IActionResult Register()
     {
         return View(new RegisterUserViewModel());
     }
 
     [HttpPost]
-    [Authorize]
+    // [Authorize]
     [ValidateAntiForgeryToken]
     [ValidateTurnstile]
     public IActionResult Register(RegisterUserViewModel model)
@@ -87,7 +90,9 @@ public class UserController(IUserService userService) : Controller
 
         catch (Exception ex)
         {
-            ModelState.AddModelError(string.Empty, ex.Message);
+            ModelState.AddModelError(string.Empty,
+                ex is UserVisibleException ? ex.Message : "An unexpected error occurred. Please try again later.");
+
             return View(model);
         }
     }

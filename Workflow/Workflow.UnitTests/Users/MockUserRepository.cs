@@ -8,7 +8,7 @@ namespace Workflow.UnitTests.Users;
 
 public class MockUserRepository : IUserRepository
 {
-    private readonly List<UserModel> _users = [];
+    private readonly List<UserDto> _users = [];
 
     public bool UserExistsByEmail(string email)
     {
@@ -20,13 +20,13 @@ public class MockUserRepository : IUserRepository
         return _users.Any(u => u.Username == username);
     }
 
-    public UserModel Register(RegisterModel model)
+    public UserDto Register(RegisterDto dto)
     {
-        var user = new UserModel(
+        var user = new UserDto(
             _users.Count + 1,
-            model.Email,
-            model.Username,
-            model.PasswordHash,
+            dto.Email,
+            dto.Username,
+            dto.PasswordHash,
             DateTime.Now
         );
 
@@ -35,12 +35,12 @@ public class MockUserRepository : IUserRepository
         return user;
     }
 
-    public UserModel? GetUserByEmail(string email)
+    public UserDto? GetUserByEmail(string email)
     {
         return _users.FirstOrDefault(u => u.Email == email);
     }
 
-    public UserModel? GetUserById(int id)
+    public UserDto? GetUserById(int id)
     {
         return _users.FirstOrDefault(u => u.Id == id);
     }

@@ -1,3 +1,5 @@
-﻿namespace Workflow.Core.Users.Exceptions;
+﻿using Workflow.Core.Exceptions;
 
-public class InvalidEmailException(string message) : Exception(message);
+namespace Workflow.Core.Users.Exceptions;
+
+public class InvalidEmailException(string message) : UserVisibleException(message);

@@ -40,7 +40,7 @@ public class UserRepository(IDbConnectionFactory factory) : IUserRepository
         return result != null;
     }
 
-    public UserModel Register(RegisterModel model)
+    public UserDto Register(RegisterDto dto)
     {
         using var connection = factory.CreateOpenConnection();
 
@@ -52,9 +52,9 @@ public class UserRepository(IDbConnectionFactory factory) : IUserRepository
                                                              WHERE id = LAST_INSERT_ID();
                                              """, connection);
 
-        command.Parameters.AddWithValue("@email", model.Email);
-        command.Parameters.AddWithValue("@username", model.Username);
-        command.Parameters.AddWithValue("@password_hash", model.PasswordHash);
+        command.Parameters.AddWithValue("@email", dto.Email);
+        command.Parameters.AddWithValue("@username", dto.Username);
+        command.Parameters.AddWithValue("@password_hash", dto.PasswordHash);
 
         using var reader = command.ExecuteReader();
         if (!reader.Read()) throw new Exception("Failed to create user.");
@@ -65,10 +65,10 @@ public class UserRepository(IDbConnectionFactory factory) : IUserRepository
         var dbPassword = reader.GetString("password_hash");
         var createdAt = reader.GetDateTime("created_at");
 
-        return new UserModel(id, dbEmail, dbUsername, dbPassword, createdAt);
+        return new UserDto(id, dbEmail, dbUsername, dbPassword, createdAt);
     }
 
-    public UserModel? GetUserByEmail(string email)
+    public UserDto? GetUserByEmail(string email)
     {
         using var connection = factory.CreateOpenConnection();
 
@@ -89,10 +89,10 @@ public class UserRepository(IDbConnectionFactory factory) : IUserRepository
         var dbPassword = reader.GetString("password_hash");
         var createdAt = reader.GetDateTime("created_at");
 
-        return new UserModel(dbId, dbEmail, dbUsername, dbPassword, createdAt);
+        return new UserDto(dbId, dbEmail, dbUsername, dbPassword, createdAt);
     }
 
-    public UserModel? GetUserById(int id)
+    public UserDto? GetUserById(int id)
     {
         using var connection = factory.CreateOpenConnection();
 
@@ -113,6 +113,6 @@ public class UserRepository(IDbConnectionFactory factory) : IUserRepository
         var dbPassword = reader.GetString("password_hash");
         var createdAt = reader.GetDateTime("created_at");
 
-        return new UserModel(dbId, dbEmail, dbUsername, dbPassword, createdAt);
+        return new UserDto(dbId, dbEmail, dbUsername, dbPassword, createdAt);
     }
 }

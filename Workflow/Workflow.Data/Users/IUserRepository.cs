@@ -5,9 +5,9 @@ public interface IUserRepository
     bool UserExistsByEmail(string email);
     bool UserExistsByUsername(string username);
     
-    UserModel Register(RegisterModel model);
+    UserDto Register(RegisterDto dto);
     
-    UserModel? GetUserByEmail(string email);
+    UserDto? GetUserByEmail(string email);
     
-    UserModel? GetUserById(int id);
+    UserDto? GetUserById(int id);
 }

@@ -1,6 +1,6 @@
 ﻿namespace Data.Users;
 
-public class UserModel(int userId, string email, string username, string passwordHash, DateTime createdAt)
+public class UserDto(int userId, string email, string username, string passwordHash, DateTime createdAt)
 {
     public int Id { get; } = userId;
     public string Email { get; } = email;

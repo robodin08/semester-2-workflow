@@ -1,3 +1,5 @@
-﻿namespace Workflow.Core.Users.Exceptions;
+﻿using Workflow.Core.Exceptions;
 
-public class InvalidPasswordException(string message) : Exception(message);
+namespace Workflow.Core.Users.Exceptions;
+
+public class InvalidPasswordException(string message) : UserVisibleException(message);
