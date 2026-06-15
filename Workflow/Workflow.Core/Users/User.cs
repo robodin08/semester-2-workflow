@@ -8,7 +8,7 @@ public class User(int id, Email email, Username username, string passwordHash, D
     public int Id { get; } = id;
     public Email Email { get; } = email;
     public Username Username { get; } = username;
-    private string PasswordHash { get; } = passwordHash;
+    public string PasswordHash { get; } = passwordHash;
     public DateTime CreatedAt { get; } = createdAt;
 
     public static User FromUserDto(UserDto dto)

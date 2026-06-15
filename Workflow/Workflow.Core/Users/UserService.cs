@@ -5,7 +5,7 @@ namespace Workflow.Core.Users;
 
 public class UserService(IUserRepository userRepository, IPasswordHasher passwordHasher) : IUserService
 {
-    public User Register(RegisterRequest request)
+    public UserResponse Register(RegisterRequest request)
     {
         var email = new Email(request.Email);
         var username = new Username(request.Username);
@@ -21,23 +21,30 @@ public class UserService(IUserRepository userRepository, IPasswordHasher passwor
 
         var userDto = userRepository.Register(new RegisterDto(email.Value, username.Value, passwordHash));
 
-        return User.FromUserDto(userDto);
+        var user = User.FromUserDto(userDto);
+        return UserResponse.FromUser(user);
     }
 
-    public User Login(LoginRequest request)
+    public UserResponse Login(LoginRequest request)
     {
         var email = new Email(request.Email);
+        var password = new Password(request.Password);
 
         var userDto = userRepository.GetUserByEmail(email.Value);
-        if (userDto == null || !passwordHasher.Verify(request.Password, userDto.PasswordHash))
+        if (userDto == null || !passwordHasher.Verify(password.Value, userDto.PasswordHash))
             throw new InvalidCredentialException("Invalid email or password");
 
-        return User.FromUserDto(userDto);
+        var user = User.FromUserDto(userDto);
+        return UserResponse.FromUser(user);
     }
 
-    public User? GetUserById(int id)
+    public UserResponse GetUserById(int id)
     {
         var userDto = userRepository.GetUserById(id);
-        return userDto == null ? null : User.FromUserDto(userDto);
+        if (userDto == null)
+            throw new UserNotFoundException($"User with id {id} not found");
+        
+        var user = User.FromUserDto(userDto);
+        return UserResponse.FromUser(user);
     }
 }

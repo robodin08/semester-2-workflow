@@ -2,9 +2,9 @@
 
 public interface IUserService
 {
-    User Register(RegisterRequest request);
+    UserResponse Register(RegisterRequest request);
     
-    User Login(LoginRequest request);
+    UserResponse Login(LoginRequest request);
     
-    User? GetUserById(int id);
+    UserResponse GetUserById(int id);
 }
