@@ -6,15 +6,16 @@ namespace Web.ViewComponents;
 
 public class TurnstileViewComponent(ITurnstileService turnstileService) : ViewComponent
 {
-    public IViewComponentResult Invoke(string? theme = null, string? size = null, string? callback = null)
+    public IViewComponentResult Invoke(string? theme, string? size)
     {
-        var model = new TurnstileViewModel
-        {
-            SiteKey = turnstileService.SiteKey,
-            Theme = theme ?? "light",
-            Size = size ?? "normal",
-            Callback = callback ?? "onSuccess"
-        };
+        var model = new TurnstileViewModel(
+            siteKey: turnstileService.SiteKey,
+            theme: theme ?? "light",
+            size: size ?? "normal",
+            onTurnstileSuccess: "onTurnstileSuccess",
+            onTurnstileError: "onTurnstileError",
+            onTurnstileExpired: "onTurnstileExpired"
+        );
 
         return View("Default", model);
     }

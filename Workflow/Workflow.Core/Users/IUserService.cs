@@ -7,4 +7,6 @@ public interface IUserService
     UserResponse Login(LoginRequest request);
     
     UserResponse GetUserById(int id);
+
+    void ChangePassword(int userId, string currentPassword, string newPassword);
 }

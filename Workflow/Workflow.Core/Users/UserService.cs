@@ -42,9 +42,24 @@ public class UserService(IUserRepository userRepository, IPasswordHasher passwor
     {
         var userDto = userRepository.GetUserById(id);
         if (userDto == null)
-            throw new UserNotFoundException($"User with id {id} not found");
+            throw new UserNotFoundException($"User not found");
         
         var user = User.FromUserDto(userDto);
         return UserResponse.FromUser(user);
+    }
+
+    public void ChangePassword(int userId, string currentPassword, string newPassword)
+    {
+        var userDto = userRepository.GetUserById(userId);
+        if (userDto == null)
+            throw new UserNotFoundException($"User with not found");
+
+        if (!passwordHasher.Verify(currentPassword, userDto.PasswordHash))
+            throw new InvalidCredentialException("Current password is incorrect");
+
+        var password = new Password(newPassword);
+        var newHash = passwordHasher.Hash(password.Value);
+
+        userRepository.UpdatePasswordHash(userId, newHash);
     }
 }

@@ -6,8 +6,16 @@
 
 @section Head {
     <script>
-        function onSuccess() {
-            document.getElementById("submit-button").disabled = false;
+        function onTurnstileSuccess() {
+            document.getElementById("submitButton").disabled = false;
+        }
+
+        function onTurnstileError() {
+            document.getElementById("submitButton").disabled = true;
+        }
+
+        function onTurnstileExpired() {
+            document.getElementById("submitButton").disabled = true;
         }
     </script>
 }
@@ -44,7 +52,7 @@
 
     @await Component.InvokeAsync("Turnstile")
     
-    <button type="submit" id="submit-button" class="btn btn-primary" disabled>Register</button>
+    <button id="submitButton" type="submit" class="btn btn-primary" disabled>Register</button>
 </form>
 
 @section Scripts {

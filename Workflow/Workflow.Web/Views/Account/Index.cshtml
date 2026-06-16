@@ -1,0 +1,104 @@
+@model AccountViewModel
+@{
+    ViewData["Title"] = "Account";
+}
+
+@section Head {
+    <script>
+        function onTurnstileSuccess() {
+            document.getElementById("changePasswordButton").disabled = false;
+        }
+
+        function onTurnstileError() {
+            document.getElementById("changePasswordButton").disabled = true;
+        }
+
+        function onTurnstileExpired() {
+            document.getElementById("changePasswordButton").disabled = true;
+        }
+    </script>
+}
+
+<div class="row">
+    <div class="col-12">
+        @if (TempData["SuccessMessage"] is string successMsg)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>&#10003;</strong> @successMsg
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["ErrorMessages"] is string[] errorMessages && errorMessages.Length > 0)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>&#10007;</strong>
+                <ul class="mb-0 ps-3">
+                    @foreach (var error in errorMessages)
+                    {
+                        <li>@error</li>
+                    }
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Account Information</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3">Email</dt>
+                    <dd class="col-sm-9">@Model.Email</dd>
+
+                    <dt class="col-sm-3">Username</dt>
+                    <dd class="col-sm-9">@Model.Username</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Change Password</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="ChangePassword" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="ChangePasswordForm.CurrentPassword" class="form-label"></label>
+                        <input name="CurrentPassword" asp-for="ChangePasswordForm.CurrentPassword" class="form-control"/>
+                        <span asp-validation-for="ChangePasswordForm.CurrentPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ChangePasswordForm.NewPassword" class="form-label"></label>
+                        <input name="NewPassword" asp-for="ChangePasswordForm.NewPassword" class="form-control"/>
+                        <span asp-validation-for="ChangePasswordForm.NewPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ChangePasswordForm.ConfirmPassword" class="form-label"></label>
+                        <input name="ConfirmPassword" asp-for="ChangePasswordForm.ConfirmPassword" class="form-control"/>
+                        <span asp-validation-for="ChangePasswordForm.ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    @await Component.InvokeAsync("Turnstile")
+
+                    <button id="changePasswordButton" type="submit" class="btn btn-primary" disabled="">Change Password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -44,4 +44,12 @@ public class MockUserRepository : IUserRepository
     {
         return _users.FirstOrDefault(u => u.Id == id);
     }
+
+    public void UpdatePasswordHash(int userId, string newPasswordHash)
+    {
+        var user = _users.FirstOrDefault(u => u.Id == userId);
+        if (user == null) return;
+        _users.Remove(user);
+        _users.Add(new UserDto(user.Id, user.Email, user.Username, newPasswordHash, user.CreatedAt));
+    }
 }

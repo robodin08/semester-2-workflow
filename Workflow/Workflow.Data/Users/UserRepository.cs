@@ -115,4 +115,20 @@ public class UserRepository(IDbConnectionFactory factory) : IUserRepository
 
         return new UserDto(dbId, dbEmail, dbUsername, dbPassword, createdAt);
     }
+
+    public void UpdatePasswordHash(int userId, string newPasswordHash)
+    {
+        using var connection = factory.CreateOpenConnection();
+
+        using var command = new MySqlCommand("""
+                                                      UPDATE users
+                                                      SET password_hash = @password_hash
+                                                      WHERE id = @id;
+                                              """, connection);
+
+        command.Parameters.AddWithValue("@password_hash", newPasswordHash);
+        command.Parameters.AddWithValue("@id", userId);
+
+        command.ExecuteNonQuery();
+    }
 }

@@ -10,18 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
 // Database
-
 var connectionString = config.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddSingleton<IDbConnectionFactory>(new DbConnectionFactory(connectionString));
 builder.Services.AddHostedService<DbHealthCheckService>();
 
 // Components
-
 var bCryptWorkFactor = config.GetValue<int>("PasswordHashing:BCryptWorkFactor");
 builder.Services.AddSingleton<IPasswordHasher>(new PasswordHasher(bCryptWorkFactor));
 
 // Services
-
 var turnstileSecretKey = config.GetValue<string>("Turnstile:SecretKey") ?? throw new InvalidOperationException("Turnstile secret key not found.");
 var turnstileSiteKey = config.GetValue<string>("Turnstile:SiteKey")  ?? throw new InvalidOperationException("Turnstile site key not found.");
 builder.Services.AddHttpClient<ITurnstileService, TurnstileService>((httpClient) => new TurnstileService(httpClient,
@@ -33,7 +30,6 @@ builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<IScheduleService, ScheduleService>();
 
 // Repositories
-
 builder.Services.AddSingleton<IScheduleRepository, ScheduleRepository>();
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
 

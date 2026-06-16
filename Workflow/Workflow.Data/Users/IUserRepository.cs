@@ -10,4 +10,6 @@ public interface IUserRepository
     UserDto? GetUserByEmail(string email);
     
     UserDto? GetUserById(int id);
+
+    void UpdatePasswordHash(int userId, string newPasswordHash);
 }

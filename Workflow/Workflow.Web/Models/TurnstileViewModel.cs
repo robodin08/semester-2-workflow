@@ -1,10 +1,18 @@
 ﻿namespace Web.Models;
 
 
-public class TurnstileViewModel
+public class TurnstileViewModel(
+    string siteKey,
+    string theme,
+    string size,
+    string onTurnstileSuccess,
+    string onTurnstileError,
+    string onTurnstileExpired)
 {
-    public string SiteKey { get; init; } = null!;
-    public string Callback { get; init; } = "onSuccess";
-    public string Theme { get; init; } = "light";
-    public string Size { get; init; } = "normal";
+    public string SiteKey { get; } = siteKey;
+    public string Theme { get; } = theme;
+    public string Size { get; } = size;
+    public string OnTurnstileSuccess { get;} = onTurnstileSuccess;
+    public string OnTurnstileError { get; } = onTurnstileError;
+    public string OnTurnstileExpired { get; } = onTurnstileExpired;
 }

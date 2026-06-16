@@ -1,10 +1,12 @@
 ﻿@model Web.Models.TurnstileViewModel;
 
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>    
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <div class="cf-turnstile"
      data-sitekey="@Model.SiteKey"
      data-theme="@Model.Theme"
      data-size="@Model.Size"
-     data-callback="@Model.Callback">
+     data-callback="@Model.OnTurnstileSuccess"
+     data-error-callback="@Model.OnTurnstileError"
+     data-expired-callback="@Model.OnTurnstileExpired">
 </div>
