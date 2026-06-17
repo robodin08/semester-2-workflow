@@ -7,7 +7,8 @@ public class TurnstileViewModel(
     string size,
     string onTurnstileSuccess,
     string onTurnstileError,
-    string onTurnstileExpired)
+    string onTurnstileExpired,
+    string onTurnstileTimeout)
 {
     public string SiteKey { get; } = siteKey;
     public string Theme { get; } = theme;
@@ -15,4 +16,5 @@ public class TurnstileViewModel(
     public string OnTurnstileSuccess { get;} = onTurnstileSuccess;
     public string OnTurnstileError { get; } = onTurnstileError;
     public string OnTurnstileExpired { get; } = onTurnstileExpired;
+    public string OnTurnstileTimeout { get; } = onTurnstileTimeout;
 }

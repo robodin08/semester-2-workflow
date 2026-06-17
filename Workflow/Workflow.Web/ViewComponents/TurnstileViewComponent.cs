@@ -14,7 +14,8 @@ public class TurnstileViewComponent(ITurnstileService turnstileService) : ViewCo
             size: size ?? "normal",
             onTurnstileSuccess: "onTurnstileSuccess",
             onTurnstileError: "onTurnstileError",
-            onTurnstileExpired: "onTurnstileExpired"
+            onTurnstileExpired: "onTurnstileExpired",
+            onTurnstileTimeout: "onTurnstileTimeout"
         );
 
         return View("Default", model);

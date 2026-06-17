@@ -9,7 +9,6 @@ public class PasswordHasher(int workFactor) : IPasswordHasher
 
     public bool Verify(string password, string hash)
     {
-        Console.WriteLine(workFactor);
         return BCrypt.Net.BCrypt.Verify(password, hash);
     }
 }
