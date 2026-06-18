@@ -20,4 +20,10 @@
       <ProjectReference Include="..\Workflow.Data\Workflow.Data.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\Schedule\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Schedule\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Schedule\Week.cshtml" />
+    </ItemGroup>
+
 </Project>
