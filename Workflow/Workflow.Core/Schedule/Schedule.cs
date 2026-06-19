@@ -2,7 +2,13 @@ using Data.Schedule;
 
 namespace Workflow.Core.Schedule;
 
-public class Schedule(int id, int weekNumber, int year, bool published, int createdBy, DateTime createdAt)
+public class Schedule(
+    int id,
+    int weekNumber,
+    int year,
+    bool published,
+    int createdBy,
+    DateTime createdAt)
 {
     public int Id { get; } = id;
     public int WeekNumber { get; } = weekNumber;

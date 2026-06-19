@@ -150,21 +150,20 @@ public class ScheduleController(IScheduleService scheduleService, IUserService u
     [Authorize(Roles = "Manager")]
     public IActionResult Edit(int id)
     {
-        var schedule = scheduleService.GetScheduleByWeek(0, 0); // placeholder - need proper method
-        var scheduleDto = scheduleService.GetAllSchedules().FirstOrDefault(s => s.Id == id);
+        var schedule = scheduleService.GetAllSchedules().FirstOrDefault(s => s.Id == id);
 
-        if (scheduleDto == null)
+        if (schedule == null)
             return NotFound();
 
         var users = userService.GetAllUsers();
         var shifts = scheduleService.GetShiftsByScheduleId(id);
 
-        var weekStart = DateOnly.FromDateTime(ISOWeek.ToDateTime(scheduleDto.Year, scheduleDto.WeekNumber, DayOfWeek.Monday));
+        var weekStart = DateOnly.FromDateTime(ISOWeek.ToDateTime(schedule.Year, schedule.WeekNumber, DayOfWeek.Monday));
 
         var model = new CreateScheduleViewModel
         {
-            WeekNumber = scheduleDto.WeekNumber,
-            Year = scheduleDto.Year,
+            WeekNumber = schedule.WeekNumber,
+            Year = schedule.Year,
             Shifts = shifts.Select(s =>
             {
                 var user = users.FirstOrDefault(u => u.Id == s.UserId);
@@ -181,7 +180,7 @@ public class ScheduleController(IScheduleService scheduleService, IUserService u
         };
 
         ViewBag.ScheduleId = id;
-        ViewBag.Published = scheduleDto.Published;
+        ViewBag.Published = schedule.Published;
         ViewBag.WeekStart = weekStart;
         PopulateEmployeeDropdown();
         return View(model);

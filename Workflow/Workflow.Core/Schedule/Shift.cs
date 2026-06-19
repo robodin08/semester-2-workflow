@@ -1,4 +1,4 @@
-﻿using Data.Schedule;
+using Data.Schedule;
 
 namespace Workflow.Core.Schedule;
 
@@ -20,9 +20,10 @@ public class Shift(
     public TimeOnly EndTime { get; } = endTime;
     public int CreatedBy { get; } = createdBy;
     public DateTime CreatedAt { get; } = createdAt;
-    
+
     public static Shift FromShiftDto(ShiftDto dto)
     {
-        return new Shift(dto.Id, dto.ScheduleId, dto.UserId, dto.ShiftDate, dto.StartTime, dto.EndTime, dto.CreatedBy, dto.CreatedAt);
+        return new Shift(dto.Id, dto.ScheduleId, dto.UserId, dto.ShiftDate, dto.StartTime, dto.EndTime, dto.CreatedBy,
+            dto.CreatedAt);
     }
 }

@@ -1,6 +1,8 @@
 @model CreateScheduleViewModel
 @{
     ViewData["Title"] = $"Edit Week {Model.WeekNumber}";
+    ViewData["CenterTitle"] =  $"Edit Week {Model.WeekNumber}";
+    
     var scheduleId = (int)ViewBag.ScheduleId!;
     var published = (bool)ViewBag.Published!;
     var weekStart = (DateOnly)ViewBag.WeekStart!;

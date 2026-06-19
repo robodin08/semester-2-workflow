@@ -1,19 +1,17 @@
-﻿using Data.Schedule;
-
-namespace Workflow.Core.Schedule;
+﻿namespace Workflow.Core.Schedule;
 
 public interface IScheduleService
 {
-    ScheduleDto? GetScheduleByWeek(int weekNumber, int year);
-    ScheduleDto CreateSchedule(int weekNumber, int year, int createdBy);
-    List<ScheduleDto> GetAllSchedules();
+    Schedule? GetScheduleByWeek(int weekNumber, int year);
+    Schedule CreateSchedule(int weekNumber, int year, int createdBy);
+    List<Schedule> GetAllSchedules();
     void PublishSchedule(int id);
     void DeleteSchedule(int id);
 
-    ShiftDto AddShift(int scheduleId, int userId, DateOnly shiftDate, TimeOnly startTime, TimeOnly endTime, int createdBy);
+    Shift AddShift(int scheduleId, int userId, DateOnly shiftDate, TimeOnly startTime, TimeOnly endTime, int createdBy);
     void RemoveShift(int shiftId);
-    ShiftDto UpdateShift(int shiftId, int userId, DateOnly shiftDate, TimeOnly startTime, TimeOnly endTime);
-    List<ShiftDto> GetShiftsByScheduleId(int scheduleId);
-    List<ShiftDto> GetShiftsByUserId(int userId);
-    List<ShiftDto> GetShiftsByUserIdAndScheduleId(int userId, int scheduleId);
+    Shift UpdateShift(int shiftId, int userId, DateOnly shiftDate, TimeOnly startTime, TimeOnly endTime);
+    List<Shift> GetShiftsByScheduleId(int scheduleId);
+    List<Shift> GetShiftsByUserId(int userId);
+    List<Shift> GetShiftsByUserIdAndScheduleId(int userId, int scheduleId);
 }

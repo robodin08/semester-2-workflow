@@ -1,22 +1,25 @@
 ﻿using Data.Schedule;
+using Workflow.Core.Schedule.Exceptions;
 
 namespace Workflow.Core.Schedule;
 
 public class ScheduleService(IScheduleRepository scheduleRepository) : IScheduleService
 {
-    public ScheduleDto? GetScheduleByWeek(int weekNumber, int year)
+    public Schedule? GetScheduleByWeek(int weekNumber, int year)
     {
-        return scheduleRepository.GetScheduleByWeek(weekNumber, year);
+        var dto = scheduleRepository.GetScheduleByWeek(weekNumber, year);
+        return dto == null ? null : Schedule.FromScheduleDto(dto);
     }
 
-    public ScheduleDto CreateSchedule(int weekNumber, int year, int createdBy)
+    public Schedule CreateSchedule(int weekNumber, int year, int createdBy)
     {
-        return scheduleRepository.CreateSchedule(new CreateScheduleDto(weekNumber, year, createdBy));
+        var dto = scheduleRepository.CreateSchedule(new CreateScheduleDto(weekNumber, year, createdBy));
+        return Schedule.FromScheduleDto(dto);
     }
 
-    public List<ScheduleDto> GetAllSchedules()
+    public List<Schedule> GetAllSchedules()
     {
-        return scheduleRepository.GetAllSchedules();
+        return scheduleRepository.GetAllSchedules().Select(Schedule.FromScheduleDto).ToList();
     }
 
     public void PublishSchedule(int id)
@@ -29,9 +32,12 @@ public class ScheduleService(IScheduleRepository scheduleRepository) : ISchedule
         scheduleRepository.DeleteSchedule(id);
     }
 
-    public ShiftDto AddShift(int scheduleId, int userId, DateOnly shiftDate, TimeOnly startTime, TimeOnly endTime, int createdBy)
+    public Shift AddShift(int scheduleId, int userId, DateOnly shiftDate, TimeOnly startTime, TimeOnly endTime,
+        int createdBy)
     {
-        return scheduleRepository.CreateShift(new CreateShiftDto(scheduleId, userId, shiftDate, startTime, endTime, createdBy));
+        var dto = scheduleRepository.CreateShift(new CreateShiftDto(scheduleId, userId, shiftDate, startTime, endTime,
+            createdBy));
+        return Shift.FromShiftDto(dto);
     }
 
     public void RemoveShift(int shiftId)
@@ -39,28 +45,30 @@ public class ScheduleService(IScheduleRepository scheduleRepository) : ISchedule
         scheduleRepository.DeleteShift(shiftId);
     }
 
-    public ShiftDto UpdateShift(int shiftId, int userId, DateOnly shiftDate, TimeOnly startTime, TimeOnly endTime)
+    public Shift UpdateShift(int shiftId, int userId, DateOnly shiftDate, TimeOnly startTime, TimeOnly endTime)
     {
         var existing = scheduleRepository.GetShift(shiftId);
-        if (existing == null) throw new InvalidOperationException("Shift not found.");
+        if (existing == null) throw new ShiftNotFoundException("Shift not found.");
 
-        return scheduleRepository.UpdateShift(shiftId, new CreateShiftDto(
+        var dto = scheduleRepository.UpdateShift(shiftId, new CreateShiftDto(
             existing.ScheduleId, userId, shiftDate, startTime, endTime, existing.CreatedBy
         ));
+        return Shift.FromShiftDto(dto);
     }
 
-    public List<ShiftDto> GetShiftsByScheduleId(int scheduleId)
+    public List<Shift> GetShiftsByScheduleId(int scheduleId)
     {
-        return scheduleRepository.GetShiftsByScheduleId(scheduleId);
+        return scheduleRepository.GetShiftsByScheduleId(scheduleId).Select(Shift.FromShiftDto).ToList();
     }
 
-    public List<ShiftDto> GetShiftsByUserId(int userId)
+    public List<Shift> GetShiftsByUserId(int userId)
     {
-        return scheduleRepository.GetShiftsByUserId(userId);
+        return scheduleRepository.GetShiftsByUserId(userId).Select(Shift.FromShiftDto).ToList();
     }
 
-    public List<ShiftDto> GetShiftsByUserIdAndScheduleId(int userId, int scheduleId)
+    public List<Shift> GetShiftsByUserIdAndScheduleId(int userId, int scheduleId)
     {
-        return scheduleRepository.GetShiftsByUserIdAndScheduleId(userId, scheduleId);
+        return scheduleRepository.GetShiftsByUserIdAndScheduleId(userId, scheduleId).Select(Shift.FromShiftDto)
+            .ToList();
     }
 }
