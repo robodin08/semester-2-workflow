@@ -11,5 +11,7 @@ public interface IUserRepository
     
     UserDto? GetUserById(int id);
 
+    List<UserDto> GetAllUsers();
+
     void UpdatePasswordHash(int userId, string newPasswordHash);
 }

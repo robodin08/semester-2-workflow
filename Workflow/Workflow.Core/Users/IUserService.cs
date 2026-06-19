@@ -8,5 +8,7 @@ public interface IUserService
     
     UserResponse GetUserById(int id);
 
+    List<UserResponse> GetAllUsers();
+
     void ChangePassword(int userId, string currentPassword, string newPassword);
 }

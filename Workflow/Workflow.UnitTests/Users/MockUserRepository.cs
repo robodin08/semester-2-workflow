@@ -20,6 +20,11 @@ public class MockUserRepository : IUserRepository
         return _users.Any(u => u.Username == username);
     }
 
+    public List<UserDto> GetAllUsers()
+    {
+        return new List<UserDto>(_users);
+    }
+
     public UserDto Register(RegisterDto dto)
     {
         var user = new UserDto(
@@ -27,6 +32,7 @@ public class MockUserRepository : IUserRepository
             dto.Email,
             dto.Username,
             dto.PasswordHash,
+            "Employee",
             DateTime.Now
         );
 
@@ -50,6 +56,6 @@ public class MockUserRepository : IUserRepository
         var user = _users.FirstOrDefault(u => u.Id == userId);
         if (user == null) return;
         _users.Remove(user);
-        _users.Add(new UserDto(user.Id, user.Email, user.Username, newPasswordHash, user.CreatedAt));
+        _users.Add(new UserDto(user.Id, user.Email, user.Username, newPasswordHash, user.Role, user.CreatedAt));
     }
 }

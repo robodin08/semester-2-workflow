@@ -29,3 +29,55 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+.week-grid.edit-grid {
+  gap: 6px;
+}
+
+.week-day {
+  min-height: 200px;
+}
+.week-day.today {
+  background: #EEF2FF;
+  outline: 2px solid var(--bs-primary);
+  outline-offset: -2px;
+}
+.week-day.today .day-date {
+  color: var(--bs-primary);
+}
+
+.schedule-row:hover {
+  border-color: #D0D0D0;
+  background: #FAFAFA;
+}
+
+.week-badge {
+  width: 48px;
+  height: 48px;
+}
+.week-badge-week {
+  line-height: 1.1;
+}
+.week-badge-year {
+  line-height: 1;
+}
+
+.add-shift-btn {
+  opacity: 0.5;
+  border-style: dashed;
+}
+.add-shift-btn:hover {
+  opacity: 1;
+}
+
+@media (max-width: 900px) {
+  .week-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 600px) {
+  .week-grid { grid-template-columns: repeat(1, 1fr); }
+}

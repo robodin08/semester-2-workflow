@@ -1,0 +1,73 @@
+@model List<ScheduleListViewModel>
+@{
+    ViewData["Title"] = "Schedules";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h4 class="fw-bold mb-0">Schedules</h4>
+    <a asp-action="Create" class="btn btn-dark btn-sm px-3 rounded-3">
+        <i class="bi bi-plus-lg me-1"></i> New Schedule
+    </a>
+</div>
+
+@if (TempData["Success"] is string success)
+{
+    <div class="alert alert-success py-2 small">@success</div>
+}
+
+@if (Model.Count == 0)
+{
+    <div class="text-center text-muted py-5">
+        <i class="bi bi-calendar-week fs-1 d-block mb-2"></i>
+        No schedules yet. Create your first one.
+    </div>
+}
+else
+{
+    <div class="d-flex flex-column gap-2">
+        @foreach (var s in Model)
+        {
+            <div class="bg-white border rounded-4 p-3 px-4 d-flex justify-content-between align-items-center schedule-row">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="week-badge bg-light rounded-3 d-flex flex-column align-items-center justify-content-center flex-shrink-0">
+                        <div class="week-badge-week fw-bold fs-6 text-body">@s.WeekNumber</div>
+                        <div class="week-badge-year small text-secondary">@s.Year</div>
+                    </div>
+                    <div>
+                        <div class="fw-medium">
+                            Week @s.WeekNumber, @s.Year
+                            @if (s.Published)
+                            {
+                                <span class="badge bg-success bg-opacity-10 text-success ms-2 fw-normal">Published</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning bg-opacity-10 text-warning ms-2 fw-normal">Draft</span>
+                            }
+                        </div>
+                        <div class="text-muted small">@s.ShiftCount shifts</div>
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <a asp-action="Edit" asp-route-id="@s.Id" class="btn btn-outline-secondary btn-sm rounded-3">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    @if (!s.Published)
+                    {
+                        <form asp-action="Publish" asp-route-id="@s.Id" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-outline-success btn-sm rounded-3">
+                                <i class="bi bi-send"></i>
+                            </button>
+                        </form>
+                    }
+                    <form asp-action="Delete" asp-route-id="@s.Id" method="post"
+                          onsubmit="return confirm('Delete this schedule?')" class="d-inline">
+                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-3">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+}

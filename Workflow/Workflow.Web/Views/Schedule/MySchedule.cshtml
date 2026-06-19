@@ -1,0 +1,50 @@
+@model ScheduleWeekViewModel
+@{
+    ViewData["Title"] = $"Week {Model.WeekNumber} - Rooster";
+    // ViewBag.FluidLayout = true;
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h5 class="fw-bold mb-0 text-muted">Rooster</h5>
+    <div class="d-flex align-items-center gap-3">
+        <a asp-action="MySchedule"
+           asp-route-weekNumber="@ViewBag.PreviousWeek"
+           asp-route-year="@ViewBag.PreviousYear"
+           class="btn btn-outline-secondary btn-sm rounded-circle border-0">
+            <i class="bi bi-chevron-left"></i>
+        </a>
+        <span class="fw-semibold">Week @Model.WeekNumber, @Model.Year</span>
+        <a asp-action="MySchedule"
+           asp-route-weekNumber="@ViewBag.NextWeek"
+           asp-route-year="@ViewBag.NextYear"
+           class="btn btn-outline-secondary btn-sm rounded-circle border-0">
+            <i class="bi bi-chevron-right"></i>
+        </a>
+    </div>
+</div>
+
+<div class="week-grid">
+    @foreach (var day in Model.Days)
+    {
+        <div class="week-day @(day.Date == DateOnly.FromDateTime(DateTime.UtcNow) ? "today" : "") d-flex flex-column rounded-3 bg-body-tertiary">
+            <div class="text-center pb-2 pt-3 px-1 border-bottom border-light">
+                <div class="small fw-semibold text-uppercase text-secondary">@day.DayName</div>
+                <div class="small text-body mt-1">@day.Date.ToString("d/M")</div>
+            </div>
+            <div class="p-2 d-flex flex-column gap-1 flex-grow-1">
+                @if (day.Shifts.Count == 0)
+                {
+                    <div class="text-muted small text-center py-3">—</div>
+                }
+                @foreach (var shift in day.Shifts)
+                {
+                    <div class="bg-white border rounded-2 p-1 px-2 small">
+                        <span>@shift.StartTime.ToString("HH:mm")</span>
+                        <span class="mx-1">–</span>
+                        <span>@shift.EndTime.ToString("HH:mm")</span>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>

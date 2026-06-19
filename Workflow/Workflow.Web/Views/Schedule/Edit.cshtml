@@ -1,0 +1,145 @@
+@model CreateScheduleViewModel
+@{
+    ViewData["Title"] = $"Edit Week {Model.WeekNumber}";
+    var scheduleId = (int)ViewBag.ScheduleId!;
+    var published = (bool)ViewBag.Published!;
+    var weekStart = (DateOnly)ViewBag.WeekStart!;
+}
+
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h4 class="fw-bold mb-0">
+            Week @Model.WeekNumber, @Model.Year
+            @if (published)
+            {
+                <span class="badge bg-success bg-opacity-10 text-success ms-2 fw-normal">Published</span>
+            }
+            else
+            {
+                <span class="badge bg-warning bg-opacity-10 text-warning ms-2 fw-normal">Draft</span>
+            }
+        </h4>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm rounded-3">
+            <i class="bi bi-arrow-left me-1"></i> Back
+        </a>
+        @if (!published)
+        {
+            <form asp-action="Publish" asp-route-id="@scheduleId" method="post" class="d-inline">
+                <button type="submit" class="btn btn-success btn-sm rounded-3 px-3">
+                    <i class="bi bi-send me-1"></i> Publish
+                </button>
+            </form>
+        }
+    </div>
+</div>
+
+@if (TempData["Success"] is string success)
+{
+    <div class="alert alert-success py-2 small">@success</div>
+}
+
+<div class="week-grid edit-grid">
+    @for (var i = 0; i < 7; i++)
+    {
+        var date = weekStart.AddDays(i);
+        var dayShifts = Model.Shifts.Where(s => s.ShiftDate == date).OrderBy(s => s.StartTime).ToList();
+        var dayName = date.ToString("ddd", new System.Globalization.CultureInfo("nl-NL"));
+
+        <div class="week-day @(date == DateOnly.FromDateTime(DateTime.UtcNow) ? "today" : "") d-flex flex-column rounded-3 bg-body-tertiary">
+            <div class="text-center pb-2 pt-3 px-1 border-bottom border-light">
+                <div class="small fw-semibold text-uppercase text-secondary">@dayName</div>
+                <div class="small text-body mt-1">@date.ToString("d/M")</div>
+            </div>
+            <div class="p-2 d-flex flex-column gap-1 flex-grow-1">
+                @if (dayShifts.Count == 0)
+                {
+                    <div class="text-muted small text-center py-3">—</div>
+                }
+                @foreach (var shift in dayShifts)
+                {
+                    <div class="bg-white border rounded-2 p-1 px-2 small d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="fw-medium">@shift.Username</div>
+                            <div class="text-muted">@shift.StartTime.ToString("HH:mm") – @shift.EndTime.ToString("HH:mm")</div>
+                        </div>
+                        @if (!published)
+                        {
+                            <form asp-action="RemoveShift" method="post" class="d-inline">
+                                <input type="hidden" name="shiftId" value="@shift.Id" />
+                                <input type="hidden" name="scheduleId" value="@scheduleId" />
+                                <button type="submit" class="btn btn-sm p-0 text-danger border-0 bg-transparent"
+                                        onclick="return confirm('Remove this shift?')">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
+                            </form>
+                        }
+                    </div>
+                }
+                @if (!published)
+                {
+                    <button class="btn btn-outline-secondary btn-sm w-100 mt-1 rounded-2 add-shift-btn"
+                            data-date="@date.ToString("yyyy-MM-dd")"
+                            onclick="showAddShift(this)">
+                        <i class="bi bi-plus"></i>
+                    </button>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@if (!published)
+{
+    <div class="modal fade" id="addShiftModal" tabindex="-1">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title fw-bold">Add Shift</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form asp-action="AddShift" method="post" class="p-3 pt-2">
+                    <input type="hidden" name="scheduleId" value="@scheduleId" />
+                    <input type="hidden" name="shiftDate" id="shiftDate" />
+                    <div class="mb-2">
+                        <label class="form-label small text-muted">Employee</label>
+                        <select name="userId" class="form-select form-select-sm" required>
+                            @if (ViewBag.Employees is IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> employees)
+                            {
+                                @foreach (var emp in employees)
+                                {
+                                    <option value="@emp.Value">@emp.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Start</label>
+                            <input type="time" name="startTime" class="form-control form-control-sm" required value="09:00" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small text-muted">End</label>
+                            <input type="time" name="endTime" class="form-control form-control-sm" required value="17:00" />
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-dark btn-sm w-100 rounded-3">Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showAddShift(btn) {
+            const date = btn.getAttribute('data-date');
+            document.getElementById('shiftDate').value = date;
+            const modal = new bootstrap.Modal(document.getElementById('addShiftModal'));
+            modal.show();
+        }
+    </script>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

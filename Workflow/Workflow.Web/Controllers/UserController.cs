@@ -19,10 +19,7 @@ public class UserController(IUserService userService) : Controller
         if (User.Identity?.IsAuthenticated == true)
             return RedirectToAction("Index", "Dashboard");
 
-        return View(new LoginUserViewModel
-        {
-            Email = TempData["Email"]?.ToString() ?? string.Empty,
-        });
+        return View(new LoginUserViewModel());
     }
 
     [HttpPost]
@@ -35,23 +32,7 @@ public class UserController(IUserService userService) : Controller
         try
         {
             var user = userService.Login(new LoginRequest(model.Email, model.Password));
-
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Username),
-            };
-
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-            var authProperties = new AuthenticationProperties
-            {
-                IsPersistent = model.RememberMe,
-            };
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                principal, authProperties);
-
+            await SignInUser(user);
             return RedirectToAction("Index", "Dashboard");
         }
         catch (Exception ex)
@@ -74,7 +55,7 @@ public class UserController(IUserService userService) : Controller
     // [Authorize]
     [ValidateAntiForgeryToken]
     [ValidateTurnstile]
-    public IActionResult Register(RegisterUserViewModel model)
+    public async Task<IActionResult> Register(RegisterUserViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -84,8 +65,8 @@ public class UserController(IUserService userService) : Controller
         try
         {
             var user = userService.Register(new RegisterRequest(model.Email, model.Username, model.Password));
-            TempData["Email"] = user.Email;
-            return RedirectToAction(nameof(Login));
+            await SignInUser(user);
+            return RedirectToAction("Index", "Dashboard");
         }
 
         catch (Exception ex)
@@ -111,5 +92,29 @@ public class UserController(IUserService userService) : Controller
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+
+    private async Task SignInUser(UserResponse user, bool rememberMe = false)
+    {
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, user.Role),
+            };
+
+            var identity = new ClaimsIdentity(
+                claims,
+                CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(identity),
+                new AuthenticationProperties
+                {
+                    IsPersistent = rememberMe
+                });
+        }
     }
 }

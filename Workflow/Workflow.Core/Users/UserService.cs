@@ -48,6 +48,12 @@ public class UserService(IUserRepository userRepository, IPasswordHasher passwor
         return UserResponse.FromUser(user);
     }
 
+    public List<UserResponse> GetAllUsers()
+    {
+        var users = userRepository.GetAllUsers();
+        return users.Select(u => UserResponse.FromUser(User.FromUserDto(u))).ToList();
+    }
+
     public void ChangePassword(int userId, string currentPassword, string newPassword)
     {
         var userDto = userRepository.GetUserById(userId);
